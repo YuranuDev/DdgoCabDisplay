@@ -33,14 +33,14 @@ int main(int argc, char *argv[])
     cli.setApplicationDescription(QStringLiteral("DdgoMascon の外部表示"));
     cli.addHelpOption();
     QCommandLineOption portOpt({"p", "port"}, QStringLiteral("受信ポート (既定 24680)"), "port", "24680");
-    QCommandLineOption themeOpt({"t", "theme"}, QStringLiteral("tims / glass / west / panel"), "name");
+    QCommandLineOption themeOpt({"t", "theme"}, QStringLiteral("tims / glass / west / panel / simple"), "name");
     QCommandLineOption windowOpt({"w", "windowed"}, QStringLiteral("全画面にしない"));
     QCommandLineOption demoOpt({"d", "demo"}, QStringLiteral("受信なしでデモ走行を表示"));
     QCommandLineOption shotOpt("screenshot", QStringLiteral("画像を保存して終了 (検証用)"), "file");
     QCommandLineOption demoTimeOpt("demo-time", QStringLiteral("デモを指定秒進めてから表示 (--screenshot 用)"), "sec");
     QCommandLineOption shotDelayOpt("screenshot-delay", QStringLiteral("撮るまでの時間 (ms)"), "ms", "1800");
     QCommandLineOption sizeOpt("size", QStringLiteral("ウィンドウの大きさ WxH"), "WxH", "1600x900");
-    QCommandLineOption pageOpt("page", QStringLiteral("最初に出す画面 (TIMS 風のみ: 0=運転 1=車両 2=空気)"), "n", "0");
+    QCommandLineOption pageOpt("page", QStringLiteral("最初に出す画面 (TIMS 風のみ: 0=運転情報 1=車両状態 2=運転記録 3=路線)"), "n", "0");
     cli.addOptions({portOpt, themeOpt, windowOpt, demoOpt, shotOpt, demoTimeOpt, shotDelayOpt, sizeOpt, pageOpt});
     cli.process(app);
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         // --demo-time があればデモを進めて撮る。無ければ実際の受信を待って撮る(通信の確認用)
         if (cli.isSet(demoTimeOpt)) {
             link.setDemo(true);
-            if (auto *demo = link.findChild<DemoSource *>()) { demo->stop(); demo->fastForward(cli.value(demoTimeOpt).toDouble()); }
+            if (auto *demo = link.findChild<DemoSource *>()) { demo->stop(); demo->fastForward(cli.value(demoTimeOpt).toDouble()); if (cli.isSet(shotDelayOpt)) demo->start(); }
         }
         auto *win = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
         const QString file = cli.value(shotOpt);

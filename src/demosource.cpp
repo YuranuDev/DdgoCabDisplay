@@ -52,7 +52,7 @@ void DemoSource::step(double dt)
             int b = int(std::ceil(req / 4.2 * kMaxB));
             if (m_v < 8 && dist < 6) b = std::min(b, 3);
             m_b = std::clamp(b, 1, kMaxB - 1); m_p = 0;
-        } else if (m_v < limit - 12) { m_p = m_v < 30 ? 5 : 4; m_b = 0; }
+        } else if (m_v < limit - (m_p > 0 ? 6 : 18)) { m_p = m_v < 30 ? 5 : 4; m_b = 0; }
         else if (m_v > limit + 1) { m_p = 0; m_b = 2; }
         else { m_p = 0; m_b = 0; }                  // 惰行
         if (dist < 0.4 && m_v < 0.6) { m_v = 0; m_dwell = 10; m_x = target - 0.2; }

@@ -31,20 +31,42 @@ Rectangle {
         }
     }
 
+    Canvas {
+        anchors.fill: parent
+        onPaint: {
+            var c = getContext("2d");
+            var g = c.createRadialGradient(width / 2, height / 2, height * 0.45, width / 2, height / 2, width * 0.62);
+            g.addColorStop(0, Qt.rgba(0, 0, 0, 0)); g.addColorStop(1, Qt.rgba(0, 0, 0, 0.55));
+            c.fillStyle = g; c.fillRect(0, 0, width, height);
+        }
+    }
+
     component Panel: Rectangle {
+        id: pnl
         property string title: ""
         radius: 14
-        color: Qt.rgba(0.08, 0.14, 0.24, 0.55)
-        border.color: Qt.rgba(0.35, 0.65, 1.0, 0.35); border.width: 1.5
-        Text { visible: parent.title.length > 0; x: 18; y: 10; text: parent.title; color: root.cSub; font.pixelSize: 20; font.letterSpacing: 2 }
+        gradient: Gradient {
+            GradientStop { position: 0; color: Qt.rgba(0.13, 0.22, 0.36, 0.62) }
+            GradientStop { position: 0.12; color: Qt.rgba(0.08, 0.14, 0.25, 0.55) }
+            GradientStop { position: 1; color: Qt.rgba(0.03, 0.06, 0.12, 0.6) }
+        }
+        border.color: Qt.rgba(0.35, 0.65, 1.0, 0.38); border.width: 1.5
+        // 上の縁の光
+        Rectangle { x: 14; y: 1; width: pnl.width - 28; height: 1.5
+            gradient: Gradient { orientation: Gradient.Horizontal
+                GradientStop { position: 0; color: "transparent" } GradientStop { position: 0.5; color: Qt.rgba(0.6, 0.85, 1, 0.8) } GradientStop { position: 1; color: "transparent" } } }
+        // 見出しの左の印
+        Rectangle { visible: pnl.title.length > 0; x: 18; y: 16; width: 4; height: 16; radius: 2; color: root.cCyan }
+        Text { visible: pnl.title.length > 0; x: 30; y: 10; text: pnl.title; color: root.cSub; font.pixelSize: 20; font.letterSpacing: 2 }
     }
     component Chip: Rectangle {
         property string text: ""
         property bool on: false
         property color lit: root.cCyan
         height: 40; width: Math.max(86, label.implicitWidth + 30); radius: 20
-        color: on ? Qt.rgba(lit.r, lit.g, lit.b, 0.22) : "transparent"
+        color: on ? Qt.rgba(lit.r, lit.g, lit.b, 0.24) : Qt.rgba(1, 1, 1, 0.02)
         border.color: on ? lit : Qt.rgba(1, 1, 1, 0.16); border.width: 2
+
         Text { id: label; anchors.centerIn: parent; text: parent.text; color: parent.on ? parent.lit : Qt.rgba(1, 1, 1, 0.3); font.pixelSize: 20; font.bold: true }
     }
 
@@ -110,7 +132,39 @@ Rectangle {
             tickColor: "#d8e6f4"; labelColor: "#d8e6f4"; limitColor: "#ffa000"
             zones: U.has(d.limit) ? [{ from: d.limit, to: maxValue, color: Qt.rgba(1, 0.25, 0.2, 0.55) }] : []
             dim: !rx
-            labelScale: 1.15
+            labelScale: 0.95
+        }
+        // 下の切れ目にノッチの弧 (右へ力行・左へブレーキ)
+        Canvas {
+            anchors.fill: parent
+            property var nn: root.n
+            onNnChanged: requestPaint()
+            onPaint: {
+                var c = getContext("2d"); c.reset();
+                var R = Math.min(width, height) / 2 - 2, cx = width / 2, cy = height / 2, k = R / 200;
+                var r = R - 15 * k, mid = Math.PI / 2, half = 38 * Math.PI / 180, gapA = 1.2 * Math.PI / 180;
+                var n = root.n, maxP = n.maxP || 5, maxB = (n.maxB || 8) + 1;
+                function seg(a0, a1, col, on) {
+                    c.beginPath(); c.arc(cx, cy, r, Math.min(a0, a1), Math.max(a0, a1));
+                    c.lineWidth = 22 * k; c.strokeStyle = on ? col : Qt.rgba(1, 1, 1, 0.07); c.stroke();
+                    
+                }
+                // N
+                seg(mid - 2.5 * Math.PI / 180, mid + 2.5 * Math.PI / 180, "#dfe9f3", n.p === 0 && n.b === 0);
+                var st = 4 * Math.PI / 180;
+                for (var i = 0; i < maxP; i++) {
+                    var a0 = mid - st - i * half / maxP, a1 = a0 - half / maxP + gapA;
+                    seg(a0, a1, root.cPower, n.b === 0 && n.p > i);
+                }
+                for (var j = 0; j < maxB; j++) {
+                    var b0 = mid + st + j * half / maxB, b1 = b0 + half / maxB - gapA;
+                    seg(b0, b1, j === maxB - 1 ? "#ff3b30" : root.cBrake, n.b > j);
+                }
+                c.font = "bold " + Math.round(18 * k) + "px '" + Qt.application.font.family + "'";
+                c.textAlign = "center"; c.textBaseline = "middle"; c.fillStyle = root.cSub;
+                c.fillText("P", cx + Math.cos(mid - st - half - 0.08) * r, cy + Math.sin(mid - st - half - 0.08) * r);
+                c.fillText("B", cx + Math.cos(mid + st + half + 0.08) * r, cy + Math.sin(mid + st + half + 0.08) * r);
+            }
         }
         // 制限速度
         Rectangle {
@@ -160,7 +214,8 @@ Rectangle {
             zones: [{ from: U.num(d.mrMin, 780), to: U.num(d.mrMax, 880), color: Qt.rgba(1, 1, 1, 0.45) },
                     { from: 0, to: Math.max(0.1, U.num(d.bc)), color: root.cBrake }]
             dim: !rx
-            labelScale: 0.95
+            labelScale: 0.8
+            digitalScale: 0.62
         }
     }
     Panel {
@@ -178,7 +233,8 @@ Rectangle {
             subText: (U.num(d.volt) / 1000).toFixed(2) + " kV"
             trackColor: "#14243a"; tickColor: "#c8d6e4"; labelColor: "#c8d6e4"
             dim: !rx
-            labelScale: 0.9
+            labelScale: 0.8
+            digitalScale: 0.6
         }
     }
 

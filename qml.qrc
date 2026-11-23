@@ -9,9 +9,13 @@
         <file>qml/parts/RouteStrip.qml</file>
         <file>qml/parts/Lamp.qml</file>
         <file>qml/parts/Clock.qml</file>
+        <file>qml/parts/HistoryChart.qml</file>
+        <file>qml/parts/RouteLine.qml</file>
+        <file>qml/parts/ModernGauge.qml</file>
         <file>qml/themes/Tims.qml</file>
         <file>qml/themes/Glass.qml</file>
         <file>qml/themes/West.qml</file>
         <file>qml/themes/Panel.qml</file>
+        <file>qml/themes/Simple.qml</file>
     </qresource>
 </RCC>

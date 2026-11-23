@@ -16,6 +16,7 @@ Window {
         { key: "glass", file: "Glass.qml", name: "グラスコックピット", note: "速度計も液晶 (E235 / 新幹線 E7 風)" },
         { key: "west",  file: "West.qml",  name: "私鉄・JR西 風",      note: "白地と紺の帯の表示 (225 系 / N700S 風)" },
         { key: "panel", file: "Panel.qml", name: "計器盤",             note: "DdgoMascon の別モニター表示と同じ並び" },
+        { key: "simple", file: "Simple.qml", name: "シンプル",          note: "モダンで落ち着いた表示。計器はアナログ" },
     ]
     property string theme: themes.some(function (t) { return t.key === startTheme; }) ? startTheme : "tims"
     property bool menuOpen: false
@@ -66,7 +67,7 @@ Window {
             MouseArea { anchors.fill: parent; onClicked: win.menuOpen = false }
             Rectangle {
                 anchors.centerIn: parent
-                width: 1100; height: 700; radius: 12
+                width: 1100; height: 820; radius: 12
                 color: "#141a22"; border.color: "#3a4a5c"; border.width: 2
                 MouseArea { anchors.fill: parent }
                 Column {
@@ -108,7 +109,7 @@ Window {
                     Text {
                         width: parent.width; wrapMode: Text.Wrap; color: "#9aa4ae"; font.pixelSize: 20
                         text: "受信: " + (link.online ? link.source + "  " + link.rate.toFixed(0) + " 回/秒" : "なし") + "   ポート " + link.port +
-                              "\nキー: 1〜4 デザイン / D デモ / F11 全画面 / M メニュー / Esc 閉じる / Ctrl+Q 終了"
+                              "\nキー: 1〜5 デザイン / D デモ / F11 全画面 / M メニュー / Esc 閉じる / Ctrl+Q 終了"
                     }
                 }
             }
@@ -125,7 +126,7 @@ Window {
     Item {
         focus: true
         Keys.onPressed: function (e) {
-            if (e.key >= Qt.Key_1 && e.key <= Qt.Key_4) win.setTheme(win.themes[e.key - Qt.Key_1].key);
+            if (e.key >= Qt.Key_1 && e.key <= Qt.Key_5) win.setTheme(win.themes[e.key - Qt.Key_1].key);
             else if (e.key === Qt.Key_D) { link.demo = !link.demo; prefs.set("demo", link.demo); }
             else if (e.key === Qt.Key_F11 || e.key === Qt.Key_F) win.toggleFull();
             else if (e.key === Qt.Key_M || e.key === Qt.Key_Tab) win.menuOpen = !win.menuOpen;
