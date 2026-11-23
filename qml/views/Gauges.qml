@@ -63,8 +63,11 @@ Item {
                 Text { anchors.right: parent.right; anchors.rightMargin: 20; anchors.verticalCenter: parent.verticalCenter; text: U.has(d.limit) ? Math.round(d.limit) + " km/h" : "—"; color: v.over ? Pal.red : Pal.yellow; font.pixelSize: 26 * Pal.ts; font.weight: Font.DemiBold }
             }
             Rectangle {
-                height: 64; width: 260; radius: 14; color: Pal.raised
-                Text { x: 20; anchors.verticalCenter: parent.verticalCenter; text: "加速度"; color: Pal.sub; font.pixelSize: 18 * Pal.ts }
+                height: 64; width: 280; radius: 14; color: Pal.raised
+                Column {
+                    x: 20; anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "加速度"; color: Pal.sub; font.pixelSize: 18 * Pal.ts }
+                }
                 Text {
                     anchors.right: parent.right; anchors.rightMargin: 20; anchors.verticalCenter: parent.verticalCenter
                     text: U.sign(d.accel, 1) + " km/h/s"

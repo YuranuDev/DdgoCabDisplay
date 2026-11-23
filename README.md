@@ -85,6 +85,7 @@ JSON の例(項目名は `Core/CabLink.cs` の `CabPacket` と同じです):
  "ahead":[{"kind":"station","label":"中央","dist":85.6,"conflict":false}]}
 ```
 
+- `accel` は加速度 (km/h/s、減速中はマイナス)。DdgoMascon がゲームの目標速度 (State.reqSpeed) の変化から求めています。
 - `notch.b` が `maxB` より大きいときは非常ブレーキです。
 - `stop.dist` は、プラスなら停止位置の手前、マイナスなら行き過ぎです(単位 m)。
 - 届かなかった項目は省きます。表示側では「--」や「—」になります。

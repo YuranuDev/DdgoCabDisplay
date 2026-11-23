@@ -8,6 +8,8 @@ Item {
     property real value: 0
     property real value2: NaN           // 2 つ目の値 (弧の上の白い点)
     property real limit: NaN
+    property real target: NaN           // 目標値 (加速度計の目標など)。外側の三角で示す
+    property color targetColor: "#ffffff"
     property real majorStep: 20
     property real minorStep: 10
     property real labelDivisor: 1
@@ -36,6 +38,7 @@ Item {
     onShownChanged: cv.requestPaint()
     onValue2Changed: cv.requestPaint()
     onLimitChanged: cv.requestPaint()
+    onTargetChanged: cv.requestPaint()
     onMaxValueChanged: cv.requestPaint()
     onMinValueChanged: cv.requestPaint()
     onZonesChanged: cv.requestPaint()
@@ -109,6 +112,21 @@ Item {
                 c.moveTo(cx + Math.cos(al) * (rA - th / 2 - 2), cy + Math.sin(al) * (rA - th / 2 - 2));
                 c.lineTo(cx + Math.cos(al) * (R + 2), cy + Math.sin(al) * (R + 2));
                 c.lineWidth = 4; c.strokeStyle = g.limitColor; c.stroke();
+            }
+            // 目標 (外側の三角と、弧の上の細い線)
+            if (!isNaN(g.target)) {
+                var at = g.ang(Math.max(g.minValue, Math.min(g.maxValue, g.target)));
+                var ca = Math.cos(at), sa = Math.sin(at), tw = R * 0.055;
+                c.beginPath();
+                c.moveTo(cx + ca * (rA + th / 2 + 1), cy + sa * (rA + th / 2 + 1));
+                c.lineTo(cx + ca * (R + 3) - sa * tw, cy + sa * (R + 3) + ca * tw);
+                c.lineTo(cx + ca * (R + 3) + sa * tw, cy + sa * (R + 3) - ca * tw);
+                c.closePath();
+                c.fillStyle = g.targetColor; c.fill();
+                c.beginPath();
+                c.moveTo(cx + ca * (rA - th / 2), cy + sa * (rA - th / 2));
+                c.lineTo(cx + ca * (rA + th / 2), cy + sa * (rA + th / 2));
+                c.lineWidth = 3; c.lineCap = "butt"; c.strokeStyle = g.targetColor; c.stroke(); c.lineCap = "round";
             }
             // 2 つ目の値
             if (!isNaN(g.value2)) {

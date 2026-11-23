@@ -103,9 +103,10 @@ Item {
         gauge.dim: !rx
     }
     GaugeCard {
-        title: "加速度 km/h/s"
+        title: "加速度"
         x: 1302; y: 246; width: 250; height: 230
         gauge.minValue: -5; gauge.maxValue: 5; gauge.majorStep: 5; gauge.minorStep: 1
+        note: "km/h/s"
         gauge.value: U.num(d.accel)
         gauge.accent: Pal.green; gauge.negAccent: Pal.orange
         gauge.valueText: U.sign(d.accel, 1)
