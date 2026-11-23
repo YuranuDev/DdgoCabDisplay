@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/parts/Util.js</file>
+        <file>qml/parts/ArcGauge.qml</file>
+        <file>qml/parts/BarMeter.qml</file>
+        <file>qml/parts/NotchLadder.qml</file>
+        <file>qml/parts/StopTape.qml</file>
+        <file>qml/parts/RouteStrip.qml</file>
+        <file>qml/parts/Lamp.qml</file>
+        <file>qml/parts/Clock.qml</file>
+        <file>qml/themes/Tims.qml</file>
+        <file>qml/themes/Glass.qml</file>
+        <file>qml/themes/West.qml</file>
+        <file>qml/themes/Panel.qml</file>
+    </qresource>
+</RCC>

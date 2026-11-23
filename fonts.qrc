@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fonts/IBMPlexSansJP-Regular.ttf</file>
+        <file>fonts/IBMPlexSansJP-Bold.ttf</file>
+    </qresource>
+</RCC>

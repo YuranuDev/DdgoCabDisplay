@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=DdgoCabDisplay
+Comment=DdgoMascon の外部表示
+# パスは置いた場所に合わせて書き換えてください
+Exec=/home/pi/DdgoCabDisplay/run.sh
+X-GNOME-Autostart-enabled=true
