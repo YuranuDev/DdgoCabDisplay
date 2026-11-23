@@ -11,12 +11,7 @@ CabLink::CabLink(int port, QObject *parent)
     : QObject(parent), m_port(port)
 {
     m_since.start();
-    m_rx = new QUdpSocket(this);
-    if (!m_rx->bind(QHostAddress::AnyIPv4, quint16(port), QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
-        m_error = QStringLiteral("UDP %1 を開けません: %2").arg(port).arg(m_rx->errorString());
-        qWarning("%s", qPrintable(m_error));
-    }
-    connect(m_rx, &QUdpSocket::readyRead, this, &CabLink::readPending);
+    bindRx();
 
     m_tx = new QUdpSocket(this);
     m_tx->bind(QHostAddress::AnyIPv4, 0);
@@ -30,6 +25,42 @@ CabLink::CabLink(int port, QObject *parent)
 }
 
 CabLink::~CabLink() = default;
+
+void CabLink::bindRx()
+{
+    if (m_rx) { m_rx->close(); m_rx->deleteLater(); }
+    m_rx = new QUdpSocket(this);
+    QString err;
+    if (!m_rx->bind(QHostAddress::AnyIPv4, quint16(m_port), QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
+        err = QStringLiteral("UDP %1 を開けません: %2").arg(m_port).arg(m_rx->errorString());
+        qWarning("%s", qPrintable(err));
+    }
+    if (err != m_error) { m_error = err; emit lastErrorChanged(); }
+    connect(m_rx, &QUdpSocket::readyRead, this, &CabLink::readPending);
+}
+
+void CabLink::setPort(int port)
+{
+    port = qBound(1024, port, 65000);
+    if (port == m_port) return;
+    m_port = port;
+    bindRx();
+    emit portChanged();
+    sendHello();
+}
+
+QStringList CabLink::addresses() const
+{
+    QStringList list;
+    for (const auto &iface : QNetworkInterface::allInterfaces()) {
+        if (!(iface.flags() & QNetworkInterface::IsUp) || (iface.flags() & QNetworkInterface::IsLoopBack)) continue;
+        for (const auto &e : iface.addressEntries())
+            if (e.ip().protocol() == QAbstractSocket::IPv4Protocol) list << e.ip().toString();
+    }
+    return list;
+}
+
+QString CabLink::hostName() const { return QHostInfo::localHostName(); }
 
 void CabLink::setDemo(bool on)
 {

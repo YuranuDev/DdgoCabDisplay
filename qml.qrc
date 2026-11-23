@@ -1,21 +1,27 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/Main.qml</file>
+        <file>qml/views/Standard.qml</file>
+        <file>qml/views/Gauges.qml</file>
+        <file>qml/parts/qmldir</file>
+        <file>qml/parts/Pal.qml</file>
         <file>qml/parts/Util.js</file>
         <file>qml/parts/ArcGauge.qml</file>
         <file>qml/parts/BarMeter.qml</file>
-        <file>qml/parts/NotchLadder.qml</file>
-        <file>qml/parts/StopTape.qml</file>
-        <file>qml/parts/RouteStrip.qml</file>
-        <file>qml/parts/Lamp.qml</file>
+        <file>qml/parts/Card.qml</file>
         <file>qml/parts/Clock.qml</file>
+        <file>qml/parts/GaugeCard.qml</file>
         <file>qml/parts/HistoryChart.qml</file>
-        <file>qml/parts/RouteLine.qml</file>
+        <file>qml/parts/KV.qml</file>
+        <file>qml/parts/Lamp.qml</file>
         <file>qml/parts/ModernGauge.qml</file>
-        <file>qml/themes/Tims.qml</file>
-        <file>qml/themes/Glass.qml</file>
-        <file>qml/themes/West.qml</file>
-        <file>qml/themes/Panel.qml</file>
-        <file>qml/themes/Simple.qml</file>
+        <file>qml/parts/NotchBar.qml</file>
+        <file>qml/parts/NotchLadder.qml</file>
+        <file>qml/parts/RouteLine.qml</file>
+        <file>qml/parts/RouteStrip.qml</file>
+        <file>qml/parts/Segmented.qml</file>
+        <file>qml/parts/StatusChip.qml</file>
+        <file>qml/parts/StopTape.qml</file>
+        <file>qml/parts/TouchButton.qml</file>
     </qresource>
 </RCC>

@@ -1,0 +1,18 @@
+singleton Pal 1.0 Pal.qml
+ArcGauge 1.0 ArcGauge.qml
+BarMeter 1.0 BarMeter.qml
+Clock 1.0 Clock.qml
+HistoryChart 1.0 HistoryChart.qml
+Lamp 1.0 Lamp.qml
+ModernGauge 1.0 ModernGauge.qml
+NotchLadder 1.0 NotchLadder.qml
+RouteLine 1.0 RouteLine.qml
+RouteStrip 1.0 RouteStrip.qml
+StopTape 1.0 StopTape.qml
+Card 1.0 Card.qml
+KV 1.0 KV.qml
+StatusChip 1.0 StatusChip.qml
+TouchButton 1.0 TouchButton.qml
+Segmented 1.0 Segmented.qml
+NotchBar 1.0 NotchBar.qml
+GaugeCard 1.0 GaugeCard.qml

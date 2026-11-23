@@ -4,6 +4,7 @@
 #include <QHostAddress>
 #include <QElapsedTimer>
 #include <QTimer>
+#include <QStringList>
 
 class QUdpSocket;
 class DemoSource;
@@ -19,7 +20,9 @@ class CabLink : public QObject
     Q_PROPERTY(bool online READ online NOTIFY onlineChanged)
     Q_PROPERTY(QString source READ source NOTIFY sourceChanged)
     Q_PROPERTY(double rate READ rate NOTIFY rateChanged)
-    Q_PROPERTY(int port READ port CONSTANT)
+    Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
+    Q_PROPERTY(QStringList addresses READ addresses NOTIFY addressesChanged)
+    Q_PROPERTY(QString hostName READ hostName CONSTANT)
     Q_PROPERTY(bool demo READ demo WRITE setDemo NOTIFY demoChanged)
     Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
 public:
@@ -31,6 +34,9 @@ public:
     QString source() const { return m_source; }
     double rate() const { return m_rate; }
     int port() const { return m_port; }
+    void setPort(int port);
+    QStringList addresses() const;
+    QString hostName() const;
     bool demo() const { return m_demo; }
     void setDemo(bool on);
     QString lastError() const { return m_error; }
@@ -45,12 +51,15 @@ signals:
     void rateChanged();
     void demoChanged();
     void lastErrorChanged();
+    void portChanged();
+    void addressesChanged();
 
 private:
     void readPending();
     void sendHello();
     void checkStale();
     void setOnline(bool on);
+    void bindRx();
 
     QUdpSocket *m_rx = nullptr;
     QUdpSocket *m_tx = nullptr;
