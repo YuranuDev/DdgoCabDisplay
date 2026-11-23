@@ -19,6 +19,7 @@ Item {
     property real radius: 3
     property bool showSent: true
     property bool glow: false
+    property bool gloss: false            // つや・立体感 (既定は平ら)
     property string ebLabel: "非常"
     property string part: "all"            // "all" / "power"(P…N) / "brake"(B…EB)
 
@@ -90,14 +91,18 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     radius: nl.radius
-                    border.width: nl.sent(modelData) ? 3 : 1
+                    border.width: nl.sent(modelData) ? 3 : (nl.frameColor.a > 0 && !cell.on ? 1 : 0)
                     border.color: nl.sent(modelData) ? "#ffffff" : cell.on ? Qt.lighter(cell.col, 1.25) : nl.frameColor.a > 0 ? nl.frameColor : Qt.rgba(1, 1, 1, 0.06)
-                    gradient: Gradient {
+                    color: cell.on ? cell.col : nl.offColor
+                    gradient: nl.gloss ? cellGrad : null
+                    Gradient {
+                        id: cellGrad
                         GradientStop { position: 0; color: cell.on ? Qt.lighter(cell.col, 1.28) : Qt.lighter(nl.offColor, 1.15) }
                         GradientStop { position: 0.5; color: cell.on ? cell.col : nl.offColor }
                         GradientStop { position: 1; color: cell.on ? Qt.darker(cell.col, 1.22) : Qt.darker(nl.offColor, 1.15) }
                     }
                     Rectangle {
+                        visible: nl.gloss
                         x: 2; y: 2; width: parent.width - 4; height: parent.height * 0.42; radius: Math.max(0, nl.radius - 1)
                         gradient: Gradient {
                             GradientStop { position: 0; color: Qt.rgba(1, 1, 1, cell.on ? 0.38 : 0.06) }

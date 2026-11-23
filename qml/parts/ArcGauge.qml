@@ -196,7 +196,7 @@ Item {
             if (g.unit.length) c.fillText(g.unit, cx, cy + R * (lcd ? 0.34 : (g.digital.length ? 0.62 : 0.40)));
 
             // ---- 液晶の消えたセグメント / 計器の数字窓 ----
-            if (g.digital.length && !lcd) {
+            if (g.digital.length && !lcd && !g.flat) {
                 var ww = 108 * k * g.digitalScale, hh = 46 * k * g.digitalScale, wy = cy + R * 0.36 - hh / 2;
                 c.fillStyle = "#0b0d0c"; c.fillRect(cx - ww / 2, wy, ww, hh);
                 c.lineWidth = 2 * k; c.strokeStyle = Qt.rgba(1, 1, 1, 0.25); c.strokeRect(cx - ww / 2, wy, ww, hh);

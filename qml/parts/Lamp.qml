@@ -16,6 +16,7 @@ Item {
     property string shape: "rect"
     property color labelColor: "#d8dde3"
     property bool phase: true
+    property bool gloss: false           // つや・立体感 (既定は平ら)
     property bool halo: false            // 点灯時に周りへ光を漏らす (既定はしない)
     property alias border: lens.border
     readonly property bool lit: on && (!blink || phase)
@@ -36,7 +37,7 @@ Item {
     }
     // 枠 (金属の縁)
     Rectangle {
-        visible: l.shape === "round"
+        visible: l.shape === "round" && l.gloss
         anchors.centerIn: lens
         width: lens.width + 8; height: width; radius: width / 2
         gradient: Gradient { GradientStop { position: 0; color: "#cfd2d6" } GradientStop { position: 1; color: "#3c3f43" } }
@@ -48,14 +49,18 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         radius: l.shape === "round" ? width / 2 : l.radius
         border.width: 1
-        border.color: l.lit ? Qt.lighter(l.litColor, 1.4) : Qt.rgba(1, 1, 1, 0.10)
-        gradient: Gradient {
+        border.color: l.gloss ? (l.lit ? Qt.lighter(l.litColor, 1.4) : Qt.rgba(1, 1, 1, 0.10)) : "transparent"
+        color: l.lit ? l.litColor : l.offColor
+        gradient: l.gloss ? glossGrad : null
+        Gradient {
+            id: glossGrad
             GradientStop { position: 0.0; color: l.lit ? Qt.lighter(l.litColor, 1.35) : Qt.lighter(l.offColor, 1.25) }
             GradientStop { position: 0.55; color: l.lit ? l.litColor : l.offColor }
             GradientStop { position: 1.0; color: l.lit ? Qt.darker(l.litColor, 1.25) : Qt.darker(l.offColor, 1.3) }
         }
         // つやの反射
         Rectangle {
+            visible: l.gloss
             x: parent.width * 0.08; y: parent.height * 0.06
             width: parent.width * 0.84; height: parent.height * 0.42
             radius: l.shape === "round" ? height / 2 : Math.max(0, l.radius - 1)

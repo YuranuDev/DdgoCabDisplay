@@ -15,59 +15,25 @@ Rectangle {
     readonly property color cBrake: "#ffa23a"
     readonly property color cSub: "#8ea3b8"
 
-    gradient: Gradient {
-        GradientStop { position: 0.0; color: "#0b1526" }
-        GradientStop { position: 0.55; color: "#050a14" }
-        GradientStop { position: 1.0; color: "#02050a" }
-    }
-
-    // うっすらした格子 (液晶らしさ)
-    Canvas {
-        anchors.fill: parent; opacity: 0.07
-        onPaint: {
-            var c = getContext("2d"); c.strokeStyle = "#5fb8ff"; c.lineWidth = 1;
-            for (var x = 0; x < width; x += 40) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, height); c.stroke(); }
-            for (var y = 0; y < height; y += 40) { c.beginPath(); c.moveTo(0, y); c.lineTo(width, y); c.stroke(); }
-        }
-    }
-
-    Canvas {
-        anchors.fill: parent
-        onPaint: {
-            var c = getContext("2d");
-            var g = c.createRadialGradient(width / 2, height / 2, height * 0.45, width / 2, height / 2, width * 0.62);
-            g.addColorStop(0, Qt.rgba(0, 0, 0, 0)); g.addColorStop(1, Qt.rgba(0, 0, 0, 0.55));
-            c.fillStyle = g; c.fillRect(0, 0, width, height);
-        }
-    }
+    color: "#070c14"
 
     component Panel: Rectangle {
         id: pnl
         property string title: ""
         radius: 14
-        gradient: Gradient {
-            GradientStop { position: 0; color: Qt.rgba(0.13, 0.22, 0.36, 0.62) }
-            GradientStop { position: 0.12; color: Qt.rgba(0.08, 0.14, 0.25, 0.55) }
-            GradientStop { position: 1; color: Qt.rgba(0.03, 0.06, 0.12, 0.6) }
-        }
-        border.color: Qt.rgba(0.35, 0.65, 1.0, 0.38); border.width: 1.5
-        // 上の縁の光
-        Rectangle { x: 14; y: 1; width: pnl.width - 28; height: 1.5
-            gradient: Gradient { orientation: Gradient.Horizontal
-                GradientStop { position: 0; color: "transparent" } GradientStop { position: 0.5; color: Qt.rgba(0.6, 0.85, 1, 0.8) } GradientStop { position: 1; color: "transparent" } } }
-        // 見出しの左の印
-        Rectangle { visible: pnl.title.length > 0; x: 18; y: 16; width: 4; height: 16; radius: 2; color: root.cCyan }
-        Text { visible: pnl.title.length > 0; x: 30; y: 10; text: pnl.title; color: root.cSub; font.pixelSize: 20; font.letterSpacing: 2 }
+        color: "#0e1623"
+        border.color: "#1c2a3d"; border.width: 1
+        Text { visible: pnl.title.length > 0; x: 20; y: 14; text: pnl.title; color: root.cSub; font.pixelSize: 15; font.letterSpacing: 2 }
     }
     component Chip: Rectangle {
         property string text: ""
         property bool on: false
         property color lit: root.cCyan
-        height: 40; width: Math.max(86, label.implicitWidth + 30); radius: 20
-        color: on ? Qt.rgba(lit.r, lit.g, lit.b, 0.24) : Qt.rgba(1, 1, 1, 0.02)
-        border.color: on ? lit : Qt.rgba(1, 1, 1, 0.16); border.width: 2
+        height: 34; width: Math.max(76, label.implicitWidth + 28); radius: 17
+        color: on ? Qt.rgba(lit.r, lit.g, lit.b, 0.18) : "transparent"
+        border.color: on ? Qt.rgba(lit.r, lit.g, lit.b, 0.6) : Qt.rgba(1, 1, 1, 0.12); border.width: 1
 
-        Text { id: label; anchors.centerIn: parent; text: parent.text; color: parent.on ? parent.lit : Qt.rgba(1, 1, 1, 0.3); font.pixelSize: 20; font.bold: true }
+        Text { id: label; anchors.centerIn: parent; text: parent.text; color: parent.on ? parent.lit : Qt.rgba(1, 1, 1, 0.3); font.pixelSize: 16; font.weight: Font.DemiBold }
     }
 
     // ================= 上の帯 =================
@@ -75,8 +41,8 @@ Rectangle {
         width: parent.width; height: 70
         Row {
             x: 26; anchors.verticalCenter: parent.verticalCenter; spacing: 18
-            Text { text: U.str(d.train, "----"); color: "white"; font.pixelSize: 32; font.bold: true }
-            Text { text: U.str(d.line, ""); color: root.cSub; font.pixelSize: 26; anchors.verticalCenter: parent.verticalCenter }
+            Text { text: U.str(d.train, "----"); color: "white"; font.pixelSize: 24; font.weight: Font.DemiBold }
+            Text { text: U.str(d.line, ""); color: root.cSub; font.pixelSize: 20; anchors.verticalCenter: parent.verticalCenter }
         }
         Row {
             anchors.centerIn: parent; spacing: 10
@@ -89,12 +55,10 @@ Rectangle {
         }
         Row {
             anchors.right: parent.right; anchors.rightMargin: 26; anchors.verticalCenter: parent.verticalCenter; spacing: 20
-            Text { text: rx ? (d.output ? "● 受信中" : "● 出力OFF") : "● 受信なし"; color: rx ? (d.output ? root.cPower : "#ffc040") : "#ff5050"; font.pixelSize: 22; anchors.verticalCenter: parent.verticalCenter }
-            Clock { color: "white"; font.pixelSize: 36; font.bold: true }
+            Text { text: rx ? (d.output ? "● 受信中" : "● 出力OFF") : "● 受信なし"; color: rx ? (d.output ? root.cPower : "#ffc040") : "#ff5050"; font.pixelSize: 17; anchors.verticalCenter: parent.verticalCenter }
+            Clock { color: "white"; font.pixelSize: 26; font.weight: Font.DemiBold }
         }
-        Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 2
-            gradient: Gradient { orientation: Gradient.Horizontal
-                GradientStop { position: 0; color: "transparent" } GradientStop { position: 0.5; color: root.cCyan } GradientStop { position: 1; color: "transparent" } } }
+        Rectangle { anchors.bottom: parent.bottom; x: 24; width: parent.width - 48; height: 1; color: "#1c2a3d" }
     }
 
     // ================= ノッチ =================
@@ -105,73 +69,31 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter; y: 42
             text: U.notchName(root.n)
             color: root.n.b > root.n.maxB ? "#ff3b30" : root.n.b > 0 ? root.cBrake : root.n.p > 0 ? root.cPower : "white"
-            font.pixelSize: 72; font.bold: true
+            font.pixelSize: 52; font.weight: Font.DemiBold
         }
         NotchLadder {
             x: 56; y: 140; width: parent.width - 112; height: 560
-            n: root.n; gap: 6; radius: 8; fontSize: 20
+            n: root.n; gap: 5; radius: 6; fontSize: 16
             powerColor: root.cPower; brakeColor: root.cBrake; neutralColor: "#dfe9f3"
             offColor: Qt.rgba(1, 1, 1, 0.05); offText: Qt.rgba(1, 1, 1, 0.28)
         }
         Text { anchors.horizontalCenter: parent.horizontalCenter; anchors.bottom: parent.bottom; anchors.bottomMargin: 26
-            text: "REV  " + U.revName(root.n.rev); color: root.cSub; font.pixelSize: 26 }
+            text: "REV  " + U.revName(root.n.rev); color: root.cSub; font.pixelSize: 18 }
     }
 
     // ================= 速度計 =================
     Item {
         x: 290; y: 80; width: 640; height: 640
-        ArcGauge {
+        ModernGauge {
             anchors.fill: parent
-            style: "lcd"
             minValue: 0; maxValue: U.num(d.speedMax, 120)
             majorStep: maxValue > 160 ? 40 : 20; minorStep: maxValue > 160 ? 10 : 5
             value: root.speed; limit: U.has(d.limit) ? d.limit : NaN
-            digital: rx && U.has(d.speed) ? Math.round(root.speed).toString() : "--"
-            unit: "km/h"
-            fillColor: root.cCyan; trackColor: "#14243a"
-            tickColor: "#d8e6f4"; labelColor: "#d8e6f4"; limitColor: "#ffa000"
-            zones: U.has(d.limit) ? [{ from: d.limit, to: maxValue, color: Qt.rgba(1, 0.25, 0.2, 0.55) }] : []
-            dim: !rx
-            labelScale: 0.95
-        }
-        // 下の切れ目にノッチの弧 (右へ力行・左へブレーキ)
-        Canvas {
-            anchors.fill: parent
-            property var nn: root.n
-            onNnChanged: requestPaint()
-            onPaint: {
-                var c = getContext("2d"); c.reset();
-                var R = Math.min(width, height) / 2 - 2, cx = width / 2, cy = height / 2, k = R / 200;
-                var r = R - 15 * k, mid = Math.PI / 2, half = 38 * Math.PI / 180, gapA = 1.2 * Math.PI / 180;
-                var n = root.n, maxP = n.maxP || 5, maxB = (n.maxB || 8) + 1;
-                function seg(a0, a1, col, on) {
-                    c.beginPath(); c.arc(cx, cy, r, Math.min(a0, a1), Math.max(a0, a1));
-                    c.lineWidth = 22 * k; c.strokeStyle = on ? col : Qt.rgba(1, 1, 1, 0.07); c.stroke();
-                    
-                }
-                // N
-                seg(mid - 2.5 * Math.PI / 180, mid + 2.5 * Math.PI / 180, "#dfe9f3", n.p === 0 && n.b === 0);
-                var st = 4 * Math.PI / 180;
-                for (var i = 0; i < maxP; i++) {
-                    var a0 = mid - st - i * half / maxP, a1 = a0 - half / maxP + gapA;
-                    seg(a0, a1, root.cPower, n.b === 0 && n.p > i);
-                }
-                for (var j = 0; j < maxB; j++) {
-                    var b0 = mid + st + j * half / maxB, b1 = b0 + half / maxB - gapA;
-                    seg(b0, b1, j === maxB - 1 ? "#ff3b30" : root.cBrake, n.b > j);
-                }
-                c.font = "bold " + Math.round(18 * k) + "px '" + Qt.application.font.family + "'";
-                c.textAlign = "center"; c.textBaseline = "middle"; c.fillStyle = root.cSub;
-                c.fillText("P", cx + Math.cos(mid - st - half - 0.08) * r, cy + Math.sin(mid - st - half - 0.08) * r);
-                c.fillText("B", cx + Math.cos(mid + st + half + 0.08) * r, cy + Math.sin(mid + st + half + 0.08) * r);
-            }
-        }
-        // 制限速度
-        Rectangle {
-            anchors.horizontalCenter: parent.horizontalCenter; y: 468; width: 170; height: 60; radius: 30
-            color: root.over ? Qt.rgba(1, 0.2, 0.15, 0.35) : Qt.rgba(1, 0.63, 0, 0.12)
-            border.color: root.over ? "#ff3b30" : "#ffa000"; border.width: 2
-            Text { anchors.centerIn: parent; text: "制限 " + (U.has(d.limit) ? Math.round(d.limit) : "--"); color: root.over ? "#ff6b60" : "#ffc04d"; font.pixelSize: 28; font.bold: true }
+            zones: U.has(d.limit) ? [{ from: d.limit, to: maxValue, color: Qt.rgba(1, 0.3, 0.25, 0.7) }] : []
+            valueText: rx && U.has(d.speed) ? Math.round(root.speed).toString() : "--"
+            unit: "km/h   制限 " + (U.has(d.limit) ? Math.round(d.limit) : "--")
+            accent: root.cCyan; track: "#132036"; tickColor: "#33465f"; labelColor: "#8ea3b8"; limitColor: "#ffa000"
+            valueSize: 0.27; thickness: 0.065; dim: !rx
         }
     }
 
@@ -179,14 +101,14 @@ Rectangle {
     Panel {
         title: "停止位置"
         x: 290; y: 730; width: 640; height: 148
-        Text { x: 18; y: 42; text: U.str(d.stop ? d.stop.station : null) + (d.stop && d.stop.marker ? "  " + d.stop.marker : ""); color: "white"; font.pixelSize: 26; font.bold: true }
+        Text { x: 18; y: 42; text: U.str(d.stop ? d.stop.station : null) + (d.stop && d.stop.marker ? "  " + d.stop.marker : ""); color: "white"; font.pixelSize: 20; font.weight: Font.DemiBold }
         Text {
             id: sdv
             readonly property real v: d.stop ? U.num(d.stop.dist, NaN) : NaN
             anchors.right: parent.right; anchors.rightMargin: 60; y: 14
             text: U.distNum(v)
             color: isNaN(v) ? "#55606c" : Math.abs(v) <= 0.5 ? root.cPower : v < 0 ? "#ff3b30" : v < 10 ? "#ffe14d" : "white"
-            font.pixelSize: 64; font.bold: true
+            font.pixelSize: 52; font.weight: Font.DemiBold
         }
         Text { anchors.left: sdv.right; anchors.leftMargin: 8; anchors.baseline: sdv.baseline; text: U.distUnit(sdv.v); color: root.cSub; font.pixelSize: 24 }
         StopTape {
@@ -200,41 +122,30 @@ Rectangle {
     Panel {
         title: "BRAKE  kPa"
         x: 950; y: 88; width: 370; height: 390
-        ArcGauge {
-            x: 20; y: 40; width: 330; height: 330
-            style: "lcd"; fillArc: false
+        ModernGauge {
+            x: 35; y: 50; width: 300; height: 300
             minValue: 0; maxValue: Math.max(1000, Math.ceil((U.num(d.mrMax, 880) + 50) / 200) * 200)
-            majorStep: 200; minorStep: 50
+            majorStep: 200; minorStep: 100
             value: U.num(d.bc); value2: U.num(d.mr)
-            needle2Color: "#ffffff"
-            digital: rx ? Math.round(U.num(d.bc)).toString() : "--"
-            digitalColor: root.cBrake; unit: "BC"
-            subText: "MR " + Math.round(U.num(d.mr))
-            trackColor: "#14243a"; tickColor: "#c8d6e4"; labelColor: "#c8d6e4"
-            zones: [{ from: U.num(d.mrMin, 780), to: U.num(d.mrMax, 880), color: Qt.rgba(1, 1, 1, 0.45) },
-                    { from: 0, to: Math.max(0.1, U.num(d.bc)), color: root.cBrake }]
-            dim: !rx
-            labelScale: 0.8
-            digitalScale: 0.62
+            accent: root.cBrake; track: "#16233a"; tickColor: "#33465f"; labelColor: "#7f93aa"
+            zones: [{ from: U.num(d.mrMin, 780), to: U.num(d.mrMax, 880), color: Qt.rgba(1, 1, 1, 0.45) }]
+            valueText: rx ? Math.round(U.num(d.bc)).toString() : "--"
+            unit: "BC   MR " + Math.round(U.num(d.mr))
+            valueSize: 0.24; dim: !rx
         }
     }
     Panel {
         title: "MOTOR  A"
         x: 950; y: 490; width: 370; height: 388
-        ArcGauge {
-            x: 20; y: 40; width: 330; height: 330
-            style: "lcd"
+        ModernGauge {
+            x: 35; y: 50; width: 300; height: 300
             minValue: -U.num(d.currentMax, 600); maxValue: U.num(d.currentMax, 600)
-            majorStep: maxValue > 400 ? 200 : 100; minorStep: majorStep / 4
+            majorStep: maxValue > 400 ? 300 : 200; minorStep: majorStep / 2
             value: U.num(d.current)
-            fillColor: root.cPower; fillColorHigh: "#66b8ff"
-            digital: rx ? Math.round(U.num(d.current)).toString() : "--"
-            unit: U.num(d.current) < -1 ? "回生" : "力行"
-            subText: (U.num(d.volt) / 1000).toFixed(2) + " kV"
-            trackColor: "#14243a"; tickColor: "#c8d6e4"; labelColor: "#c8d6e4"
-            dim: !rx
-            labelScale: 0.8
-            digitalScale: 0.6
+            accent: root.cPower; negAccent: "#66b8ff"; track: "#16233a"; tickColor: "#33465f"; labelColor: "#7f93aa"
+            valueText: rx ? Math.round(U.num(d.current)).toString() : "--"
+            unit: (U.num(d.current) < -1 ? "回生" : "力行") + "   " + (U.num(d.volt) / 1000).toFixed(2) + " kV"
+            valueSize: 0.24; dim: !rx
         }
     }
 
@@ -242,13 +153,13 @@ Rectangle {
     Panel {
         title: d.at ? "停車中" : "NEXT"
         x: 1338; y: 88; width: 240; height: 790
-        Text { x: 18; y: 40; width: parent.width - 36; text: U.str(d.at || d.next); color: "white"; font.pixelSize: 48; font.bold: true; elide: Text.ElideRight }
-        Text { x: 18; y: 102; text: d.at ? "" : U.dist(d.nextDist); color: root.cCyan; font.pixelSize: 30 }
+        Text { x: 18; y: 40; width: parent.width - 36; text: U.str(d.at || d.next); color: "white"; font.pixelSize: 34; font.weight: Font.DemiBold; elide: Text.ElideRight }
+        Text { x: 18; y: 102; text: d.at ? "" : U.dist(d.nextDist); color: root.cCyan; font.pixelSize: 22 }
         RouteStrip {
             x: 6; y: 150; width: parent.width - 12; height: 600
             items: d.ahead || []; stopDist: d.stop ? U.num(d.stop.dist, NaN) : NaN
-            stationColor: root.cCyan; railColor: Qt.rgba(0.5, 0.75, 1, 0.5); fontSize: 22
+            stationColor: root.cCyan; railColor: Qt.rgba(0.5, 0.75, 1, 0.5); fontSize: 18
         }
-        Text { x: 18; anchors.bottom: parent.bottom; anchors.bottomMargin: 14; text: "加速度 " + U.sign(d.accel, 1); color: root.cSub; font.pixelSize: 20 }
+        Text { x: 18; anchors.bottom: parent.bottom; anchors.bottomMargin: 14; text: "加速度 " + U.sign(d.accel, 1) + " km/h/s"; color: root.cSub; font.pixelSize: 16 }
     }
 }

@@ -21,12 +21,15 @@ Item {
     property color labelColor: "#8b94a1"
     property color needleColor: "#f2f4f7"
     property color limitColor: "#ffb020"
+    property color hubInner: "#0e1116"
     property string valueText: ""
+    property color valueColor: "#f2f4f7"
     property string unit: ""
     property string caption: ""
     property real valueSize: 0.30       // 数字の大きさ (半径に対する割合)
     property bool dim: false
     property real thickness: 0.075      // 弧の太さ (半径に対する割合)
+    property bool showLabels: true      // 目盛の数字 (小さい計器では消す)
 
     property real shown: value
     Behavior on shown { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
@@ -90,7 +93,7 @@ Item {
                 c.lineTo(cx + Math.cos(a) * (rT - len), cy + Math.sin(a) * (rT - len));
                 c.lineWidth = major ? 2 : 1.2; c.lineCap = "butt";
                 c.strokeStyle = major ? g.labelColor : g.tickColor; c.stroke();
-                if (major) {
+                if (major && g.showLabels) {
                     var fsL = Math.max(12, Math.round(R * 0.105));
                     var rL = rT - len - fsL * 1.25;
                     c.fillStyle = g.labelColor; c.textAlign = "center"; c.textBaseline = "middle";
@@ -121,12 +124,12 @@ Item {
             c.lineTo(cx + Math.cos(an) * (rA + th / 2), cy + Math.sin(an) * (rA + th / 2));
             c.lineWidth = Math.max(2.5, R * 0.022); c.strokeStyle = g.dim ? "#555" : g.needleColor; c.stroke();
             c.beginPath(); c.arc(cx, cy, R * 0.055, 0, Math.PI * 2); c.fillStyle = g.needleColor; c.fill();
-            c.beginPath(); c.arc(cx, cy, R * 0.025, 0, Math.PI * 2); c.fillStyle = "#0e1116"; c.fill();
+            c.beginPath(); c.arc(cx, cy, R * 0.025, 0, Math.PI * 2); c.fillStyle = g.hubInner; c.fill();
 
             // 下の切れ目: 数字・単位・見出し
             c.textAlign = "center"; c.textBaseline = "alphabetic";
             if (g.valueText.length) {
-                c.fillStyle = g.dim ? "#5a626d" : "#f2f4f7";
+                c.fillStyle = g.dim ? "#5a626d" : g.valueColor;
                 c.font = "600 " + Math.round(R * g.valueSize) + "px " + f;
                 c.fillText(g.valueText, cx, cy + R * 0.60);
             }

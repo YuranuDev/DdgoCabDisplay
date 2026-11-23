@@ -45,35 +45,35 @@ Item {
             if (list[0].dist >= 0) selfX = xs(0) - 30;
             // 線 (通過済みは灰色)
             c.lineCap = "round";
-            c.lineWidth = 16; c.strokeStyle = r.passedColor;
+            c.lineWidth = 8; c.strokeStyle = r.passedColor;
             c.beginPath(); c.moveTo(xs(0) - 40, y); c.lineTo(selfX, y); c.stroke();
             c.strokeStyle = r.lineColor;
             c.beginPath(); c.moveTo(selfX, y); c.lineTo(xs(n - 1) + 40, y); c.stroke();
             // 進行方向の矢印
             c.fillStyle = r.lineColor;
-            c.beginPath(); c.moveTo(xs(n - 1) + 62, y); c.lineTo(xs(n - 1) + 36, y - 18); c.lineTo(xs(n - 1) + 36, y + 18); c.closePath(); c.fill();
+            c.beginPath(); c.moveTo(xs(n - 1) + 56, y); c.lineTo(xs(n - 1) + 38, y - 11); c.lineTo(xs(n - 1) + 38, y + 11); c.closePath(); c.fill();
             // 駅
             var nextIdx = -1;
             for (var j = 0; j < n; j++) if (list[j].dist >= -1) { nextIdx = j; break; }
             for (var k = 0; k < n; k++) {
                 var x = xs(k), passed = list[k].dist < -1, isNext = k === nextIdx;
-                c.beginPath(); c.arc(x, y, isNext ? 20 : 15, 0, Math.PI * 2);
+                c.beginPath(); c.arc(x, y, isNext ? 13 : 10, 0, Math.PI * 2);
                 c.fillStyle = r.stationFill; c.fill();
-                c.lineWidth = isNext ? 8 : 6; c.strokeStyle = passed ? r.passedColor : isNext ? r.nextColor : r.lineColor; c.stroke();
+                c.lineWidth = isNext ? 5 : 4; c.strokeStyle = passed ? r.passedColor : isNext ? r.nextColor : r.lineColor; c.stroke();
                 c.textAlign = "center"; c.textBaseline = "top";
                 c.font = (isNext ? "bold " : "") + Math.round(r.fontSize * (isNext ? 1.15 : 1)) + "px '" + Qt.application.font.family + "'";
                 c.fillStyle = passed ? r.subColor : isNext ? r.nextColor : r.textColor;
-                c.fillText(list[k].label, x, y + 28);
+                c.fillText(list[k].label, x, y + 22);
                 if (!passed) {
                     c.font = Math.round(r.fontSize * 0.62) + "px '" + Qt.application.font.family + "'";
                     c.fillStyle = r.subColor; c.textBaseline = "bottom";
-                    c.fillText(U.dist(list[k].dist), x, y - 26);
+                    c.fillText(U.dist(list[k].dist), x, y - 20);
                 }
             }
             // 列車
             c.fillStyle = r.trainColor;
             c.beginPath();
-            c.moveTo(selfX + 22, y); c.lineTo(selfX - 4, y - 16); c.lineTo(selfX - 4, y + 16); c.closePath(); c.fill();
+            c.arc(selfX, y, 8, 0, Math.PI * 2); c.fill();
             c.lineWidth = 3; c.strokeStyle = "white"; c.stroke();
         }
     }
